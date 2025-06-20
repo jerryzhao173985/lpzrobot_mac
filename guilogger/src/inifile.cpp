@@ -109,8 +109,10 @@ bool IniFile::Load(){
         if (beforeFirstSection){ // wird als Kommentar gewertet
           comment.append(str1);
         }else{                    // Normale Variable
-          momvar=new IniVar(str1,str2,str3);
-          momsection->vars.append(momvar);
+          if (momsection) {  // Ensure we have a valid section
+            momvar=new IniVar(str1,str2,str3);
+            momsection->vars.append(momvar);
+          }
         }
       break;
     }
@@ -338,14 +340,24 @@ bool IniSection::operator== (IniSection& _section){
 void IniSection::copy (IniSection& _section){
   _section.setName(name);
   _section.setComment(comment);
-  _section.vars=vars; // Operator von Qt ueberladen
-  // Qt5: No more setAutoDelete
+  
+  // Deep copy: clear existing vars and create new IniVar objects
+  qDeleteAll(_section.vars);
+  _section.vars.clear();
+  
+  foreach(IniVar* var, vars) {
+    if (var) {  // Check for null pointer
+      IniVar* newVar = new IniVar();
+      var->copy(*newVar);
+      _section.vars.append(newVar);
+    }
+  }
 }
 
 
 bool IniSection::getVar( IniVar& _var, QString _name){
   foreach(IniVar* tempvar, vars){
-    if (tempvar->getName()==_name){
+    if (tempvar && tempvar->getName()==_name){  // Add null check
       tempvar->copy(_var);
       return true;
     }

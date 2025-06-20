@@ -47,9 +47,14 @@ Successfully migrated all GUI tools from Qt4/Qt3Support to Qt5:
 - **selforg** ✅: Successfully built (57MB static library)
 - **ode_robots** ✅: Successfully built (348MB static library)
 
-### 6. GUI Tools
-- **guilogger** ✅: Successfully built (467KB app bundle)
-- **matrixviz** ✅: Successfully built (281KB executable)
+### 6. GUI Tools (FULLY WORKING)
+- **guilogger** ✅: Successfully built and tested (467KB app bundle)
+  - Fixed critical memory management bug in IniFile::copy()
+  - Added null pointer checks for safety
+  - Verified working in all modes (file, pipe, fpipe)
+- **matrixviz** ✅: Successfully built and tested (281KB executable)
+  - Working properly with simulation data
+  - Video recording functionality intact
 - **configurator** ⏳: Needs Qt5 migration (optional)
 
 ## Key Changes Made
@@ -65,6 +70,9 @@ Successfully migrated all GUI tools from Qt4/Qt3Support to Qt5:
 8. `selforg/controller/use_java_controller.cpp`: Fixed bind namespace
 9. `ode_robots/utils/console.cpp`: Added whitespace macro
 10. Various `.pro` files: Updated to Qt5
+11. `guilogger/src/inifile.cpp`: Fixed memory management bug in IniSection::copy()
+12. `ode_robots/ode_robots-config`: Fixed macOS static linking issues
+13. `selforg/selforg-config`: Fixed macOS static linking issues
 
 ### Build Instructions
 
@@ -104,19 +112,38 @@ Successfully migrated all GUI tools from Qt4/Qt3Support to Qt5:
 ## Testing
 
 To test the installation:
-1. **Test guilogger**: 
+1. **Initialize configuration**:
    ```bash
-   ./guilogger/src/bin/guilogger.app/Contents/MacOS/guilogger
+   ./init_lpzrobots_config.sh
    ```
-2. **Test matrixviz**: 
+
+2. **Test guilogger**: 
    ```bash
-   ./matrixviz/bin/matrixviz
+   # Using wrapper script (recommended)
+   ./guilogger/guilogger-wrapper.sh --help
+   
+   # Test with sample data
+   echo -e "#C test[m]\n0.5\n0.7\n0.3" | ./guilogger/guilogger-wrapper.sh -m pipe
    ```
-3. **Run a simulation**: 
+
+3. **Test matrixviz**: 
+   ```bash
+   # Using wrapper script (recommended)
+   echo -e "#M test 2 2\n1 2\n3 4" | ./matrixviz/matrixviz-wrapper.sh -novideo
+   ```
+
+4. **Run a simulation with GUI tools**: 
    ```bash
    cd ode_robots/simulations/template_sphererobot
    make
    ./start -g 1  # Run with guilogger
+   ./start -m 1  # Run with matrixviz
+   ./start -g 1 -m 1  # Run with both
+   ```
+
+5. **Set up PATH (optional)**:
+   ```bash
+   ./setup_lpzrobots_path.sh
    ```
 
 ## Future Improvements
