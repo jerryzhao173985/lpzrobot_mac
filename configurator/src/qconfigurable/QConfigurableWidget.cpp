@@ -140,6 +140,8 @@
  ***************************************************************************/
 
 #include "QConfigurableWidget.h"
+#include <QFileDialog>
+#include <QMessageBox>
 #include <QtGui>
 #include <QtXml>
 #include <QFile>

@@ -44,6 +44,9 @@
 #define QLOGVIEWWIDGET_H_
 
 #include <QtGui>
+#include <QtWidgets>
+#include <QWidget>
+#include <QTextEdit>
 #include <QWidget>
 
 class QLogViewWidget : public QWidget

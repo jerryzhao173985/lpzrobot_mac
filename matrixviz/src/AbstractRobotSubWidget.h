@@ -26,6 +26,8 @@
 #define ABSTRACT_ROBOT_SUB_WIDGET_H
 
 #include <QtGui>
+#include <QtWidgets>
+#include <QWidget>
 
 class AbstractPlotChannel;
 

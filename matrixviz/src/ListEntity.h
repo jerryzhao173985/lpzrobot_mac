@@ -25,6 +25,10 @@
 
 #include <QColor>
 #include <QtGui>
+#include <QtWidgets>
+#include <QWidget>
+#include <QPushButton>
+#include <QDoubleSpinBox>
 
 #ifndef __LISTENTITY_H_
 #define __LISTENTITY_H_

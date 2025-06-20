@@ -50,7 +50,8 @@ LandscapeVisualisation::~LandscapeVisualisation(){
 
 void LandscapeVisualisation::initializeGL(){
   if(debug) cout << "LandscapeVisualisation Konstruktor" << endl;
-  qglClearColor( Qt::black);    // Let OpenGL clear to black
+  initializeOpenGLFunctions();
+  glClearColor(0.0f, 0.0f, 0.0f, 1.0f);    // Let OpenGL clear to black
   glClearDepth(1.0f);
   glEnable(GL_DEPTH_TEST);
   glEnable(GL_COLOR_MATERIAL);
@@ -245,9 +246,9 @@ void LandscapeVisualisation::drawTriangle(VERTEX& v1, VERTEX& v2, VERTEX& v3, VE
             c3 = colorPalette->pickColor(v3.y);
   glBegin( GL_TRIANGLES); //kante zwischen p10 u p01
    glNormal3f(n.x, n.y, n.z);
-   qglColor(c1); glVertex3f(v1.x, v1.y, v1.z);
-   qglColor(c2); glVertex3f(v2.x, v2.y, v2.z);
-   qglColor(c3); glVertex3f(v3.x, v3.y, v3.z);
+   glColor3f(c1.redF(), c1.greenF(), c1.blueF()); glVertex3f(v1.x, v1.y, v1.z);
+   glColor3f(c2.redF(), c2.greenF(), c2.blueF()); glVertex3f(v2.x, v2.y, v2.z);
+   glColor3f(c3.redF(), c3.greenF(), c3.blueF()); glVertex3f(v3.x, v3.y, v3.z);
   glEnd();
 }
 
@@ -286,7 +287,7 @@ void LandscapeVisualisation::mouseMoveEvent ( QMouseEvent *event ){
 //    if(debug) cout << "rotX= " << rotX << " rotY= " << rotY << endl;
     mouseY = event->y();
     mouseX = event->x();
-    updateGL();
+    update();
   }
 }
 
@@ -294,7 +295,7 @@ void LandscapeVisualisation::wheelEvent(QWheelEvent * event){
   if(debug) cout << event->delta() << endl;
   zoom += ((event->delta() / 120) * 0.1);
   if ( zoom < 0.) zoom = 0.;
-  updateGL();
+  update();
   event->accept();
 }
 

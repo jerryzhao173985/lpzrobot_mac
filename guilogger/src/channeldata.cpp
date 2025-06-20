@@ -184,7 +184,7 @@ MultiChannel ChannelData::extractMultiChannel(int* i){
           mc.rows    = mc.rows    < row+1 ? row+1 : mc.rows;
         } else {
           fprintf(stderr, "error while parsing matrix element %s!",
-                  channels[index].name.latin1());
+                  channels[index].name.toLatin1().constData());
         }
         index++;
       }
@@ -209,7 +209,7 @@ MultiChannel ChannelData::extractMultiChannel(int* i){
           mc.rows    = mc.rows    < row+1 ? row+1 : mc.rows;
         } else {
           fprintf(stderr, "error while parsing vector element %s!",
-                  channels[index].name.latin1());
+                  channels[index].name.toLatin1().constData());
         }
         index++;
       }
@@ -350,7 +350,7 @@ ChannelVals ChannelData::getData(const QList<ChannelName>& channels, int index) 
 
 
 void ChannelData::receiveRawData(QString data){
-  QStringList parsedString = QStringList::split(' ', data.trimmed());  //parse data string with Space as separator
+  QStringList parsedString = data.trimmed().split(' ');  //parse data string with Space as separator
   QString& first = *(parsedString.begin());
   if(first == "#C")   //Channels einlesen
     {
@@ -359,7 +359,7 @@ void ChannelData::receiveRawData(QString data){
       //transmit channels to GNUPlot
       QStringList channels;
       FOREACH(QStringList, parsedString, s){
-        channels.push_back((*s).stripWhiteSpace());
+        channels.push_back((*s).trimmed());
       }
       setChannels(channels);
     }
@@ -410,7 +410,7 @@ void ChannelData::receiveRawData(QString data){
       int i=0;
 
       FOREACH(QStringList, parsedString, s){
-        dat[i] = (*s).stripWhiteSpace().toDouble();
+        dat[i] = (*s).trimmed().toDouble();
         i++;
       }
       setData(dat);

@@ -28,7 +28,7 @@
 
 FileLogger::FileLogger(QString pf)
 {   prefix = pf;
-    log= FALSE;
+    log= false;
     instream=0;
 }
 
@@ -46,8 +46,8 @@ void FileLogger::openStream()
     if(instream) {
       fclose(instream);
     }
-    instream = fopen(filename.latin1(),"w+");
-    printf("Open Logfile: %s\n",filename.latin1());
+    instream = fopen(filename.toLatin1().constData(),"w+");
+    printf("Open Logfile: %s\n",filename.toLatin1().constData());
 }
 
 
@@ -60,5 +60,5 @@ void FileLogger::writeChannelData(QString datablock)
       openStream();
     }
     if(instream)
-      fprintf(instream, "%s", datablock.latin1());
+      fprintf(instream, "%s", datablock.toLatin1().constData());
 }

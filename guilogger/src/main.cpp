@@ -28,6 +28,8 @@
 
 #include <qapplication.h>
 #include <qdesktopwidget.h>
+#include <QScreen>
+#include <QGuiApplication>
 #include "guilogger.h"
 #include "filelogger.h"
 #include "qserialreader.h"
@@ -92,8 +94,8 @@ int main( int argc, char ** argv ) {
     }
 
     QRect screenRect(0,0,1024,768);
-    if(a.desktop()){
-      screenRect = a.desktop()->screenGeometry();
+    if(QGuiApplication::primaryScreen()){
+      screenRect = QGuiApplication::primaryScreen()->geometry();
     }
     GuiLogger *gl = new GuiLogger(params, screenRect);
     ChannelData* cd = &gl->getChannelData();
@@ -101,7 +103,7 @@ int main( int argc, char ** argv ) {
     if(params.getMode()=="serial")    
     {   QSerialReader *qserial = new QSerialReader();
         if(params.getPort() != "") qserial->setComPort(params.getPort());
-        printf("Guilogger: Using serial port %s as source.\n", qserial->getComPort().latin1());
+        printf("Guilogger: Using serial port %s as source.\n", qserial->getComPort().toLatin1().constData());
         qsource = qserial;
         a.connect(qsource, SIGNAL(newData(QString)), cd, SLOT(receiveRawData(QString)));
         qsource->start();
@@ -114,7 +116,7 @@ int main( int argc, char ** argv ) {
       a.connect(qsource, SIGNAL(newData(QString)), cd, SLOT(receiveRawData(QString)));
       qsource->start();
     }else if(params.getMode()=="fpipe") {  
-      FILE* f = fopen(params.getFile(),"r");
+      FILE* f = fopen(params.getFile().toLatin1().constData(),"r");
       QPipeReader *qpipe = new QPipeReader(0,f);
       if(params.getDelay() >= 0) qpipe->setDelay(params.getDelay());
       printf("Guilogger: Using file-pipe input\n");
@@ -134,14 +136,14 @@ int main( int argc, char ** argv ) {
 
     FileLogger fl;
     if(params.getLogg()) 
-    {   fl.setLogging(TRUE);
+    {   fl.setLogging(true);
         printf("Guilogger: Logging is on\n");
         a.connect(qsource, SIGNAL(newData(QString)), &fl, SLOT(writeChannelData(QString)));  // the filelogger is listening
     }
 
 //    if(params.getMode() != "file") qsource->start();
 
-    gl->setCaption( "GUI Logger" );
+    gl->setWindowTitle( "GUI Logger" );
     gl->show();
     a.connect( gl, SIGNAL(quit()), &a, SLOT(quit()) );
     a.connect( &a, SIGNAL(lastWindowClosed()), &a, SLOT(quit()) );

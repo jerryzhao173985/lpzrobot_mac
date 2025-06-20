@@ -129,7 +129,7 @@ int IniFile::getLineType( QString _line, QString &str1, QString &str2, QString &
 
   if (_line.isEmpty()|| _line=="\n") return EMPTY;
 
-  if (_line.find(QRegExp("^[;#]"),0)!=-1){
+  if (_line.indexOf(QRegExp("^[;#]"),0)!=-1){
     str1=_line;
     return COMMENT;
   }
@@ -175,7 +175,7 @@ bool IniFile::Save(){
   file.setFileName(filename);
   if (! file.open(QIODevice::WriteOnly)){
 #ifdef DEBUG
-    cerr << "\nCannot write File: " << filename.latin1();
+    cerr << "\nCannot write File: " << filename.toLatin1().constData();
 #else
 
 #endif
@@ -187,18 +187,18 @@ bool IniFile::Save(){
   QString line;
 
   // Durchgehen und alles reinschreiben
-  file.writeBlock(comment.latin1(),comment.length());
-  for(section=sections.first();section!=0;section=sections.next()){
+  file.write(comment.toLatin1());
+  foreach(section, sections){
     line="\n[";
     line.append(section->getName());
     line.append("]\n");
-    file.writeBlock(line.latin1(),line.length());
+    file.write(line.toLatin1());
     line=section->getComment();
     if (!line.isEmpty()) {
       line += "\n";
-      file.writeBlock(line.latin1(),line.length());
+      file.write(line.toLatin1());
     }
-    for(var=section->vars.first();var!=0;var=section->vars.next()){
+    foreach(var, section->vars){
       line=var->getName();
       if (! var->getValue().isEmpty()){
         line.append("=");
@@ -207,7 +207,7 @@ bool IniFile::Save(){
 //      }else{
         line.append("\n");
       }
-      file.writeBlock(line.latin1(),line.length());
+      file.write(line.toLatin1());
     }
   }
 
@@ -229,20 +229,22 @@ void IniFile::Clear(){
 
 bool IniFile::getSection(IniSection& _section,QString _name,bool _next){
   static QString lastname;
-  IniSection* sec;
+  static int lastindex = 0;
+  
   if (_next==false || (_next==true && _name!=lastname) ) {
     lastname ="";
-    sec=sections.first();
-
+    lastindex = 0;
   }else{
-    sec=sections.next();
+    lastindex++;
   }
 
   lastname=_name;
 
-  for(;sec!=0;sec=sections.next()){
+  for(int i = lastindex; i < sections.size(); i++){
+      IniSection* sec = sections[i];
       if (sec->getName()==_name){  // gefunden
         sec->copy(_section);
+        lastindex = i;
         return true;
       }
   }
@@ -258,7 +260,8 @@ IniSection *IniFile::addSection(QString name)
 
 
 void IniFile::delSection(IniSection* _section)
-{   sections.remove(_section);
+{   sections.removeAll(_section);
+    delete _section;
     _section = NULL;
 }
 
@@ -336,13 +339,12 @@ void IniSection::copy (IniSection& _section){
   _section.setName(name);
   _section.setComment(comment);
   _section.vars=vars; // Operator von Qt ueberladen
-  _section.vars.setAutoDelete(false);
+  // Qt5: No more setAutoDelete
 }
 
 
 bool IniSection::getVar( IniVar& _var, QString _name){
-  IniVar* tempvar;
-  for(tempvar=vars.first();tempvar;tempvar=vars.next()){
+  foreach(IniVar* tempvar, vars){
     if (tempvar->getName()==_name){
       tempvar->copy(_var);
       return true;
@@ -353,7 +355,8 @@ bool IniSection::getVar( IniVar& _var, QString _name){
 
 
 void IniSection::delVar(IniVar* _var)
-{    vars.remove(_var);  // automatic deletion
+{    vars.removeAll(_var);
+     delete _var;
      _var = NULL;
 }
 

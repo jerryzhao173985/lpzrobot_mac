@@ -60,10 +60,10 @@ void QSerialReader::run()
             return;
     }
 
-    fd = open(port, O_RDWR |O_SYNC);//|O_NONBLOCK);  // open port
+    fd = open(port.toLatin1().constData(), O_RDWR |O_SYNC);//|O_NONBLOCK);  // open port
 
     if (fd <0) 
-    {   printf("Cannot open serial port %s\n", port.latin1()); 
+    {   printf("Cannot open serial port %s\n", port.toLatin1().constData()); 
         return;
     }
     // set interface parameters
@@ -88,7 +88,7 @@ void QSerialReader::run()
             i=read( fd, &c, 1);        //  get one character from port fd
         } while(i!=1);
 
-        if(size > 0 && c=='#') size=0;  // neue Channel Zeile fängt mitten drinne irgendwie an
+        if(size > 0 && c=='#') size=0;  // neue Channel Zeile fï¿½ngt mitten drinne irgendwie an
 
         size++;
         s = (char*) realloc( s, size+1);

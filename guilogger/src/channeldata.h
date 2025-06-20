@@ -28,10 +28,10 @@
 #include <QObject>
 #include <QString>
 #include <QVector>
-#include <QLinkedList>
 #include <QList>
 #include <QStringList>
 #include <QHash>
+#include <list>
 
 typedef QString ChannelObjectName;
 typedef QString ChannelName;
@@ -63,7 +63,7 @@ typedef struct _MultiChannel{
 
 typedef QVector<double> ChannelVals;
 
-typedef QLinkedList<int> IndexList;
+typedef std::list<int> IndexList;
 
 typedef QVector<MultiChannel> MultiChannels;
 

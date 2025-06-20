@@ -41,6 +41,7 @@
  ***************************************************************************/
 
 #include "QLogViewWidget.h"
+#include <QGridLayout>
 
 QLogViewWidget::QLogViewWidget()
 {

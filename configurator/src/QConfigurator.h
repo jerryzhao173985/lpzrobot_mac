@@ -140,6 +140,7 @@
 #define __QECBROBOTSWINDOW_H
 
 #include <QtGui>
+#include <QtWidgets>
 #include <QMainWindow>
 #include <QTextEdit>
 #include <QTimer>
@@ -147,6 +148,8 @@
 #include <qdom.h>
 #include "QExtAction.h"
 #include <QHash>
+#include <QScrollArea>
+#include <QWidget>
 
 #include "QLogViewWidget.h"
 #include "QConfigurableWidget.h"

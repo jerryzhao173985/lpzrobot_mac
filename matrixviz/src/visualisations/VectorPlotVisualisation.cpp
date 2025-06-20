@@ -35,7 +35,8 @@ VectorPlotVisualisation::~VectorPlotVisualisation(){
 
 void VectorPlotVisualisation::initializeGL(){
   if(debug) cout << "VectorPlotVisualisation Konstruktor" << endl;
-  qglClearColor( Qt::black);    // Let OpenGL clear to black
+  initializeOpenGLFunctions();
+  glClearColor(0.0f, 0.0f, 0.0f, 1.0f);    // Let OpenGL clear to black
   glShadeModel( GL_SMOOTH );
 }
 
@@ -61,7 +62,7 @@ void VectorPlotVisualisation::paintGL(){
       double val = channel->getValue(i, j);
 
       QColor color = colorPalette->pickScaledColor(val);
-      qglColor(color);
+      glColor3f(color.redF(), color.greenF(), color.blueF());
 
       val = colorPalette->getScaledValue(val);
 

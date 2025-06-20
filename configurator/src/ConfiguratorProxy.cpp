@@ -53,6 +53,8 @@
  ***************************************************************************/
 
 #include "ConfiguratorProxy.h"
+#include <QApplication>
+#include <QWidget>
 #include "QConfigurator.h"
 #include <pthread.h>
 

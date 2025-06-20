@@ -45,7 +45,12 @@ Successfully migrated all GUI tools from Qt4/Qt3Support to Qt5:
 
 ### 5. Library Builds
 - **selforg** ✅: Successfully built (57MB static library)
-- **ode_robots** 🚧: Partially built, compiles with OpenSceneGraph support
+- **ode_robots** ✅: Successfully built (348MB static library)
+
+### 6. GUI Tools
+- **guilogger** ✅: Successfully built (467KB app bundle)
+- **matrixviz** ✅: Successfully built (281KB executable)
+- **configurator** ⏳: Needs Qt5 migration (optional)
 
 ## Key Changes Made
 
@@ -90,15 +95,29 @@ Successfully migrated all GUI tools from Qt4/Qt3Support to Qt5:
 
 1. **OpenGL Deprecation Warnings**: macOS has deprecated OpenGL. Use `-DGL_SILENCE_DEPRECATION` to suppress warnings.
 
-2. **ODE Physics Engine**: Full ODE build may take a long time. A stub configuration is provided for basic functionality.
+2. **ODE Integration**: Using Homebrew's ODE (v0.16.6) instead of building from source. Created symlink structure for ode-dbl compatibility.
 
-3. **Build Time**: ode_robots has ~300+ source files and may take significant time to compile.
+3. **Build Time**: ode_robots has ~300+ source files and may take significant time to compile (~5-10 minutes on M4).
+
+4. **AGL Framework**: Removed from all Makefiles as it's deprecated on modern macOS.
 
 ## Testing
 
 To test the installation:
-1. Run a GUI tool: `./guilogger/guilogger`
-2. Try a simulation: `cd ode_robots/simulations/barrel && make && ./start`
+1. **Test guilogger**: 
+   ```bash
+   ./guilogger/src/bin/guilogger.app/Contents/MacOS/guilogger
+   ```
+2. **Test matrixviz**: 
+   ```bash
+   ./matrixviz/bin/matrixviz
+   ```
+3. **Run a simulation**: 
+   ```bash
+   cd ode_robots/simulations/template_sphererobot
+   make
+   ./start -g 1  # Run with guilogger
+   ```
 
 ## Future Improvements
 

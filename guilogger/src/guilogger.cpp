@@ -338,17 +338,15 @@ void GuiLogger::save(bool blank){
 
   cfgFile.setFilename("guilogger.cfg");
 
-  section = cfgFile.sections.first();  // delete all "window" sections, because they will be rewritten in the next "for loop".
-  while(section)     {
+  // delete all "window" sections, because they will be rewritten in the next "for loop".
+  QMutableListIterator<IniSection*> it(cfgFile.sections);
+  while(it.hasNext()) {
+    section = it.next();
     if(section->getName() == "Window") {
-      cfgFile.sections.remove();  // remove current item, iterator++
-      section = cfgFile.sections.current();
+      it.remove();  // remove current item
     } else if(blank && (section->getName() == "General" || section->getName() == "GNUPlot" ||
                    section->getName() == "Misc")) {
-      cfgFile.sections.remove();  // remove current item, iterator++
-      section = cfgFile.sections.current();
-    } else {
-      section = cfgFile.sections.next();
+      it.remove();  // remove current item
     }
   }
 
@@ -417,7 +415,7 @@ void GuiLogger::save(bool blank){
       }else{
         sec->addValue("Position", "-1 -1"," # set to any coordinate to place a window by hand, (-1 -1) means automatic. If calcPositions then this is ignored");
       }
-      FOREACHC(QLinkedList<int>, plotInfos[i]->getVisibleChannels(), c){
+      FOREACHC(std::list<int>, plotInfos[i]->getVisibleChannels(), c){
         sec->addValue("Channel", channelData.getChannelName(*c));
         // todo maybe add style as well
       }
@@ -470,10 +468,10 @@ void GuiLogger::load() {
   }
 
   // load window settings
-  for(section = cfgFile.sections.first(); section != 0; section = cfgFile.sections.next()) {
+  foreach(section, cfgFile.sections) {
     if(section->getName() == "Window"){
       pwin=0;
-      for(var = section->vars.first(); var!=0; var = section->vars.next())
+      foreach(var, section->vars)
         {   qv = var->getValue();
           if(var->getName() == "Number") {
             pwin = qv.toInt();
@@ -491,11 +489,11 @@ void GuiLogger::load() {
             plotInfos[pwin]->setChannelShow(qv,true);
           } else if(var->getName() == "Size") {
             int x,y;
-            if(sscanf(qv.latin1(),"%ix%i",&x,&y)==2)
+            if(sscanf(qv.toLatin1().constData(),"%ix%i",&x,&y)==2)
               windowsize.insert(pwin, QSize(x,y));
           } else if(var->getName() == "Position") {
             int w,h;
-            if(sscanf(qv.latin1(),"%i %i",&w,&h)==2)
+            if(sscanf(qv.toLatin1().constData(),"%i %i",&w,&h)==2)
               windowposition.insert(pwin, QSize(w,h));
           }
         }
@@ -555,11 +553,11 @@ void GuiLogger::load() {
   if(cfgFile.getSection(GNUplotsection,"GNUPlot",false)){
     IniVar* var;
     QString qv;
-    for(var = GNUplotsection.vars.first(); var!=0; var = GNUplotsection.vars.next()) {
+    foreach(var, GNUplotsection.vars) {
       qv = var->getValue();
       if(var->getName() == "Command")
         for(int k=0; k<plotwindows; k++)
-          plotWindows[k].command(qv.latin1());
+          plotWindows[k].command(qv.toLatin1().constData());
     }
   }
 

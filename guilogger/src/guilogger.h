@@ -41,8 +41,8 @@
 #include <qstringlist.h>
 #include <qlabel.h>
 #include <qdialog.h>
-#include <qlinkedlist.h>
 #include <qlayout.h>
+#include <list>
 #include <qstringlist.h>
 #include <qscrollarea.h>
 //#include <qtimer.h>
@@ -113,7 +113,7 @@ private:
 
 private:
     
-  QLinkedList<QString> inputbuffer;
+  std::list<QString> inputbuffer;
 
   QBoxLayout* layout;
   QWidget* channelandslider;

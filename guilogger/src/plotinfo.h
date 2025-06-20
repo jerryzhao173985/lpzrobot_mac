@@ -29,9 +29,9 @@
 #include <QString>
 #include <QVector>
 #include <QList>
-#include <QLinkedList>
 #include <QStringList>
 #include <QHash>
+#include <list>
 
 #include "channeldata.h"
 
@@ -89,7 +89,7 @@ public:
   bool getIsVisible() const { return isVisisble; }
 
   const ChannelData& getChannelData() const { return channelData; }
-  const QLinkedList<int> getVisibleChannels() const { return visiblechannels; }
+  const std::list<int> getVisibleChannels() const { return visiblechannels; }
   const QVector<ChannelPlotInfo >& getChannelInfos() const { return channels; }
 
 
@@ -104,7 +104,7 @@ private:
   /** list of channel information */
   QVector<ChannelPlotInfo > channels;
   ///< indexes of visible channels (this makes the display quick and the selection slow)
-  QLinkedList<int> visiblechannels; // TODO: convert to a map
+  std::list<int> visiblechannels; // TODO: convert to a map
   bool isVisisble;
 
   int reference1;

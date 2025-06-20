@@ -180,7 +180,8 @@ bool PlotChannelsTableModel::setData(const QModelIndex &index, const QVariant &v
 
 
 void PlotChannelsTableModel::update(){
-  reset();
+  beginResetModel();
+  endResetModel();
   //   QModelIndex start = index(0,0);
   //   QModelIndex end = index(columnCount(),rowCount());
   //   printf("udpate: %i, %i\n",columnCount(),rowCount());

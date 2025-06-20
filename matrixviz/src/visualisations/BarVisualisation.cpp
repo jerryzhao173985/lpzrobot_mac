@@ -48,7 +48,8 @@ BarVisualisation::~BarVisualisation(){
 
 void BarVisualisation::initializeGL(){
   if(debug) cout << "BarVisualisation Konstruktor" << endl;
-  qglClearColor( Qt::black);    // Let OpenGL clear to black
+  initializeOpenGLFunctions();
+  glClearColor(0.0f, 0.0f, 0.0f, 1.0f);    // Let OpenGL clear to black
   glClearDepth(1.0f);
   glEnable(GL_DEPTH_TEST);
   glEnable(GL_COLOR_MATERIAL);
@@ -98,7 +99,7 @@ void BarVisualisation::paintGL(){
       double val = channel->getValue(i, j);
       QColor color = colorPalette->pickScaledColor(val);
 
-      qglColor(color);
+      glColor3f(color.redF(), color.greenF(), color.blueF());
 
       drawBar(colorPalette->getScaledValue(val));
       glTranslatef(1.f, .0f, .0f);
@@ -207,7 +208,7 @@ void BarVisualisation::mouseMoveEvent ( QMouseEvent *event ){
     rotY += (event->x() - mouseX) / 2;
     mouseY = event->y();
     mouseX = event->x();
-    updateGL();
+    update();
   }
 }
 
@@ -215,7 +216,7 @@ void BarVisualisation::wheelEvent(QWheelEvent * event){
   if(debug) cout << event->delta() << endl;
   zoom += ((event->delta() / 120) * 0.1);
   if ( zoom < 0.) zoom = 0.;
-  updateGL();
+  update();
   event->accept();
 }
 

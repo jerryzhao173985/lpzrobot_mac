@@ -27,6 +27,11 @@
 #define __SCALEFUNCTION_H_
 
 #include <QtGui>
+#include <QtWidgets>
+#include <QWidget>
+#include <QSpinBox>
+#include <QLabel>
+#include <QCheckBox>
 #include <math.h>
 
 class ScaleFunction : public QWidget{

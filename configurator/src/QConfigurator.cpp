@@ -173,7 +173,16 @@
 
 #include "QConfigurator.h"
 #include "QConfigurableLoadSaveDialog.h"
-#include  <QScrollArea>
+#include "QExtAction.h"
+#include <QScrollArea>
+#include <QMainWindow>
+#include <QAction>
+#include <QMenu>
+#include <QMenuBar>
+#include <QToolBar>
+#include <QStatusBar>
+#include <QDockWidget>
+#include <QApplication>
 
 namespace lpzrobots {
 

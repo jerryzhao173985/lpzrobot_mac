@@ -25,6 +25,7 @@
 
 #include "plotinfo.h"
 #include "stl_adds.h"
+#include <algorithm>
 
 PlotInfo::PlotInfo(const ChannelData& cd)
   : channelData(cd), isVisisble(true), reference1(-1), reference2(-1),
@@ -72,10 +73,10 @@ void PlotInfo::setChannelShow(int index, bool on){
   if(index >=0 && index < channels.size()){
     if(on){
       // make sure it is in the list of visible channels
-      if(!visiblechannels.contains(index)){
+      if(std::find(visiblechannels.begin(), visiblechannels.end(), index) == visiblechannels.end()){
         // insertation sort
         bool inserted=false;
-        FOREACH(QLinkedList<int>, visiblechannels, i){
+        for(std::list<int>::iterator i = visiblechannels.begin(); i != visiblechannels.end(); ++i){
           if(*i>index){
             visiblechannels.insert(i,index);
             inserted=true;
@@ -86,7 +87,7 @@ void PlotInfo::setChannelShow(int index, bool on){
       }
     }else{
       // erase index from list
-      QLinkedList<int>::iterator it = qFind(visiblechannels.begin(),
+      std::list<int>::iterator it = std::find(visiblechannels.begin(),
                                             visiblechannels.end(), index);
       if (it != visiblechannels.end()){
         visiblechannels.erase(it);
@@ -114,7 +115,7 @@ void PlotInfo::setAllChannelShow(bool on){
 }
 
 bool PlotInfo::getChannelShow(int index) const {
-  return visiblechannels.contains(index);
+  return std::find(visiblechannels.begin(), visiblechannels.end(), index) != visiblechannels.end();
 }
 
 void PlotInfo::setStyle(const ChannelName& channel, PlotStyle style){

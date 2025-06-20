@@ -28,8 +28,13 @@
 
 #include <QString>
 #include <QtGui>
+#include <QtWidgets>
 #include <QSize>
 #include <QVector>
+#include <QWidget>
+#include <QListWidget>
+#include <QPushButton>
+#include <QLineEdit>
 #include "MatrixPlotChannel.h"
 #include "ScaleFunction.h"
 

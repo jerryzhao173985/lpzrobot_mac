@@ -29,6 +29,8 @@
 
 
 #include <QtGui>
+#include <QtWidgets>
+#include <QWidget>
 
 
 

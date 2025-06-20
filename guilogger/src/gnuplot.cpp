@@ -3,6 +3,7 @@
 #include "stl_adds.h"
 #include <stdio.h>
 #include <locale.h> // need to set LC_NUMERIC to have a '.' in the numbers piped to gnuplot
+#include <list>
 
 Gnuplot::Gnuplot(const PlotInfo* plotInfo)
   : plotInfo(plotInfo), pipe(0) {
@@ -22,12 +23,12 @@ bool Gnuplot::open(const QString& gnuplotcmd, int w,int h, int x, int y){
 //  setlocale(LC_NUMERIC,"en_US"); // set us type output
 #if defined(WIN32) || defined(_WIN32) || defined (__WIN32) || defined(__WIN32__) \
         || defined (_WIN64) || defined(__CYGWIN__) || defined(__MINGW32__)
-  sprintf(cmd, "%s", gnuplotcmd.latin1());
+  sprintf(cmd, "%s", gnuplotcmd.toLatin1().constData());
 #else
   if(x==-1 || y==-1)
-    sprintf(cmd, "%s -geometry %ix%i -noraise >/dev/null 2>/dev/null", gnuplotcmd.latin1(), w, h);
+    sprintf(cmd, "%s -geometry %ix%i -noraise >/dev/null 2>/dev/null", gnuplotcmd.toLatin1().constData(), w, h);
   else
-    sprintf(cmd, "%s -geometry %ix%i+%i+%i -noraise >/dev/null 2>/dev/null", gnuplotcmd.latin1(), w, h, x, y);
+    sprintf(cmd, "%s -geometry %ix%i+%i+%i -noraise >/dev/null 2>/dev/null", gnuplotcmd.toLatin1().constData(), w, h, x, y);
 #endif
   pipe=popen(cmd,"w");
 
@@ -48,7 +49,7 @@ void Gnuplot::close(){
 /** send arbitrary command to gnuplot.
     like "set zeroaxis" or other stuff */
 void Gnuplot::command(const QString& cmd){
-  fprintf(pipe,"%s\n",cmd.latin1());
+  fprintf(pipe,"%s\n",cmd.toLatin1().constData());
   fflush(pipe);
 };
 
@@ -64,7 +65,7 @@ void plotDataSet(FILE* f, const ChannelVals& vals){
 
 /** make gnuplot plot selected content of data buffers */
 QString Gnuplot::plotCmd(const QString& file, int start, int end){
-  const QLinkedList<int>& vc = plotInfo->getVisibleChannels();
+  const std::list<int>& vc = plotInfo->getVisibleChannels();
   if(vc.size()==0) return QString();  
   QStringList buffer;  
   bool first=true;
@@ -74,7 +75,7 @@ QString Gnuplot::plotCmd(const QString& file, int start, int end){
     range=QString(" every ::%1::%2 ").arg(start).arg(end); 
   }
   
-  FOREACHC(QLinkedList<int>, vc, i){    
+  FOREACHC(std::list<int>, vc, i){    
     if(first){
       buffer << "plot '" << (file.isEmpty() ? "-" : file)  << "' ";    
       first=false;
@@ -91,7 +92,7 @@ QString Gnuplot::plotCmd(const QString& file, int start, int end){
       }
     }
     buffer << "t '" << cd.getInfos()[*i].name << "'";        
-    if(!plotInfo->getChannelInfos()[*i].style != PS_DEFAULT) 
+    if(plotInfo->getChannelInfos()[*i].style != PS_DEFAULT) 
       buffer << " w " << plotInfo->getChannelInfos()[*i].getStyleString();    
   }
   return buffer.join(QString());  
@@ -107,13 +108,13 @@ void Gnuplot::plot(){
   // todo: use reference2 and plot3d?
 
   const ChannelData& cd      = plotInfo->getChannelData();
-  const QLinkedList<int>& vc = plotInfo->getVisibleChannels();
+  const std::list<int>& vc = plotInfo->getVisibleChannels();
   // FILE* pipe = stderr; // test
   if(vc.size()==0) return;
-  fprintf(pipe, "%s\n", plotCmd().latin1());    
+  fprintf(pipe, "%s\n", plotCmd().toLatin1().constData());    
   
   if(plotInfo->getUseReference1()){    
-    QLinkedList<int> visibles(vc);
+    std::list<int> visibles(vc.begin(), vc.end());
     visibles.push_front(plotInfo->getReference1());        
     const QVector<ChannelVals>& vals = cd.getHistory(visibles, 0); // full history    
     int len = visibles.size();
