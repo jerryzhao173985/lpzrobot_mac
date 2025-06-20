@@ -99,7 +99,7 @@ Successfully migrated all GUI tools from Qt4/Qt3Support to Qt5:
    make
    ```
 
-## Known Issues
+## Known Issues and Solutions
 
 1. **OpenGL Deprecation Warnings**: macOS has deprecated OpenGL. Use `-DGL_SILENCE_DEPRECATION` to suppress warnings.
 
@@ -108,6 +108,15 @@ Successfully migrated all GUI tools from Qt4/Qt3Support to Qt5:
 3. **Build Time**: ode_robots has ~300+ source files and may take significant time to compile (~5-10 minutes on M4).
 
 4. **AGL Framework**: Removed from all Makefiles as it's deprecated on modern macOS.
+
+5. **GUI Tools PATH Issue**: Simulations expect `guilogger` and `matrixviz` to be in PATH. Solution:
+   ```bash
+   # Before running simulations with GUI:
+   source ./setup_gui_path.sh
+   
+   # Or add to ~/.zshrc:
+   export PATH="/Users/jerry/lpzrobots_mac/guilogger:/Users/jerry/lpzrobots_mac/matrixviz:$PATH"
+   ```
 
 ## Testing
 

@@ -14,6 +14,16 @@ This document provides examples and usage instructions for the LPZRobots GUI too
    ./init_lpzrobots_config.sh
    ```
 
+3. Set up PATH for GUI tools:
+   ```bash
+   source ./setup_gui_path.sh
+   ```
+   
+   Or add to your shell configuration (~/.zshrc):
+   ```bash
+   export PATH="/Users/jerry/lpzrobots_mac/guilogger:/Users/jerry/lpzrobots_mac/matrixviz:$PATH"
+   ```
+
 ## guilogger
 
 guilogger is a real-time plotting tool for visualizing sensor and motor data from robot simulations.
