@@ -22,16 +22,26 @@ bool Gnuplot::open(const QString& gnuplotcmd, int w,int h, int x, int y){
   setlocale(LC_NUMERIC,"C"); // set us type output
 //  setlocale(LC_NUMERIC,"en_US"); // set us type output
 #if defined(WIN32) || defined(_WIN32) || defined (__WIN32) || defined(__WIN32__) \
-        || defined (_WIN64) || defined(__CYGWIN__) || defined(__MINGW32__)
+        || defined (_WIN64) || defined(__CYGWIN__) || defined(__MINGW32__) || defined(__APPLE__)
+  // Windows and macOS don't support -geometry option
   sprintf(cmd, "%s", gnuplotcmd.toLatin1().constData());
 #else
+  // Linux with X11 supports -geometry
   if(x==-1 || y==-1)
-    sprintf(cmd, "%s -geometry %ix%i -noraise >/dev/null 2>/dev/null", gnuplotcmd.toLatin1().constData(), w, h);
+    sprintf(cmd, "%s -geometry %ix%i -noraise", gnuplotcmd.toLatin1().constData(), w, h);
   else
-    sprintf(cmd, "%s -geometry %ix%i+%i+%i -noraise >/dev/null 2>/dev/null", gnuplotcmd.toLatin1().constData(), w, h, x, y);
+    sprintf(cmd, "%s -geometry %ix%i+%i+%i -noraise", gnuplotcmd.toLatin1().constData(), w, h, x, y);
 #endif
+  fprintf(stderr, "Guilogger: Opening gnuplot with command: %s\n", cmd);
   pipe=popen(cmd,"w");
+  
+  if(pipe == NULL) {
+    fprintf(stderr, "Guilogger: ERROR: Failed to open gnuplot pipe. Is gnuplot installed?\n");
+    fprintf(stderr, "Guilogger: Tried command: %s\n", cmd);
+    return false;
+  }
 
+  fprintf(stderr, "Guilogger: Gnuplot pipe opened successfully\n");
   return true;
   //return popen("gnuplot -geometry 400x300","w");
   /*char b[100];
@@ -49,8 +59,10 @@ void Gnuplot::close(){
 /** send arbitrary command to gnuplot.
     like "set zeroaxis" or other stuff */
 void Gnuplot::command(const QString& cmd){
-  fprintf(pipe,"%s\n",cmd.toLatin1().constData());
-  fflush(pipe);
+  if(pipe) {
+    fprintf(pipe,"%s\n",cmd.toLatin1().constData());
+    fflush(pipe);
+  }
 };
 
 
@@ -104,6 +116,10 @@ QString Gnuplot::plotCmd(const QString& file, int start, int end){
 void Gnuplot::plot(){
   // calculate real values for start and end
   if(!plotInfo || !plotInfo->getIsVisible()) return;
+  if(!pipe) {
+    fprintf(stderr, "Guilogger: WARNING: plot() called but pipe is NULL\n");
+    return; // Don't try to plot if pipe is NULL
+  }
 
   // todo: use reference2 and plot3d?
 
@@ -111,7 +127,10 @@ void Gnuplot::plot(){
   const std::list<int>& vc = plotInfo->getVisibleChannels();
   // FILE* pipe = stderr; // test
   if(vc.size()==0) return;
-  fprintf(pipe, "%s\n", plotCmd().toLatin1().constData());    
+  
+  QString cmd = plotCmd();
+  fprintf(stderr, "Guilogger: Sending plot command: %s\n", cmd.toLatin1().constData());
+  fprintf(pipe, "%s\n", cmd.toLatin1().constData());    
   
   if(plotInfo->getUseReference1()){    
     std::list<int> visibles(vc.begin(), vc.end());

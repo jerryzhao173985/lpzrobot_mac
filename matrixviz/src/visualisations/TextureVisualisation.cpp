@@ -46,8 +46,10 @@ TextureVisualisation::TextureVisualisation(MatrixPlotChannel *channel, ColorPale
 
 TextureVisualisation::~TextureVisualisation(){
   if(debug) cout << "TextureVisualisation Destruktor" << endl;
-  makeCurrent();
-  glDeleteLists( object, 1 );
+  if(object != 0) {
+    makeCurrent();
+    glDeleteLists( object, 1 );
+  }
 }
 
 void TextureVisualisation::initializeGL(){

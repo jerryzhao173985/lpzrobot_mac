@@ -379,7 +379,11 @@ void GuiLogger::save(bool blank){
 #if defined(WIN32) || defined(_WIN32) || defined (__WIN32) || defined(__WIN32__) \
       || defined (_WIN64) || defined(__CYGWIN__) || defined(__MINGW32__)
     section->addValue("Command","set terminal wxt");
+#elif defined(__APPLE__)
+    // macOS: Use qt terminal which is available with Homebrew gnuplot
+    section->addValue("Command","set terminal qt");
 #else
+    // Linux/Unix: Use x11 terminal
     section->addValue("Command","set terminal x11");
 #endif
     section->addValue("Command","set style data lines");

@@ -55,7 +55,7 @@ void signal_handler_init(){
 #if defined(WIN32) || defined(_WIN32) || defined (__WIN32) || defined(__WIN32__) \
   || defined (_WIN64) || defined(__CYGWIN__) || defined(__MINGW32__)
 #else
-  signal(SIGPIPE, SIG_DFL);
+  signal(SIGPIPE, SIG_IGN); // Ignore SIGPIPE to prevent crashes when gnuplot pipe breaks
 #endif
 }
 
