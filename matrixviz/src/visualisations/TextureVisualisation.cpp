@@ -52,7 +52,8 @@ TextureVisualisation::~TextureVisualisation(){
 
 void TextureVisualisation::initializeGL(){
   if(debug) cout << "TextureVisualisation initializeGL" << endl;
-  qglClearColor( Qt::black);    // Let OpenGL clear to black
+  initializeOpenGLFunctions();  // Qt5: Initialize OpenGL functions
+  glClearColor(0.0f, 0.0f, 0.0f, 1.0f);    // Let OpenGL clear to black
   object = makeObject();    // Generate an OpenGL display list
   glShadeModel( GL_FLAT );
 

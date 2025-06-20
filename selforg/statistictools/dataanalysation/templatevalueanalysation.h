@@ -181,7 +181,7 @@ public:
          */
         type getAvg() {
                 type avg=zero();                                                                                                                                                //by begin the average is zero
-                __gnu_cxx::__normal_iterator<type*,std::vector<type,std::allocator<type> > > iter;
+                typename std::vector<type>::iterator iter;
 
                 for(iter = m_vector.begin(); iter != m_vector.end(); iter++) {
                         avg = add(avg,(*iter));                                                                                                                                //for all elements in the set add it to the average.
@@ -202,7 +202,7 @@ public:
          */
         type getMin() {
                 type min = m_vector[0];                        //the lowest element is at begin the first element
-                __gnu_cxx::__normal_iterator<type*,std::vector<type,std::allocator<type> > > iter = m_vector.begin();
+                typename std::vector<type>::iterator iter = m_vector.begin();
 
                 for(iter++; iter != m_vector.end(); iter++) {
                         if(lower((*iter),min))                //if a element lower than min, so reset the min to the lower value.
@@ -220,7 +220,7 @@ public:
          */
         type getMax() {
                 type max = m_vector[0];                        //the highest element is at begin the first element
-                __gnu_cxx::__normal_iterator<type*,std::vector<type,std::allocator<type> > > iter = m_vector.begin();
+                typename std::vector<type>::iterator iter = m_vector.begin();
 
                 for(iter++; iter != m_vector.end(); iter++) {
                         if(lower(max,(*iter)))                //if a element higher than max, so reset the max to the higher value.
@@ -253,7 +253,7 @@ public:
                 type median;
                 int x;
                 int num = m_vector.size()/2;
-                std::_List_iterator<TYPE_SAVE> iter;
+                typename std::list<TYPE_SAVE>::iterator iter;
 
                 if(!m_listCreated)
                         sort();                                                                //sort the set. to define the middle
@@ -285,7 +285,7 @@ public:
                 type q;
                 int x;
                 int num = m_vector.size()/4;
-                std::_List_iterator<TYPE_SAVE> iter;
+                typename std::list<TYPE_SAVE>::iterator iter;
 
                 if(!m_listCreated)
                         sort();                                                                //sort the set.
@@ -316,7 +316,7 @@ public:
                 type q;
                 int x;
                 int num = m_vector.size()*3/4;
-                std::_List_iterator<TYPE_SAVE> iter;
+                typename std::list<TYPE_SAVE>::iterator iter;
 
                 if(!m_listCreated)
                         sort();                                                                //sort the set.
@@ -375,7 +375,7 @@ public:
                 type dQ1 = getQuartil1();                                        //calculate the under quartil
                                                                                                         //TODO for optimization: getWhisker use getIQR and this calculate Q1 so it will be calculate two times!!!
                 type dBorder = sub(dQ1,dW);                                        //where is the border for the lowest value
-                std::_List_iterator<TYPE_SAVE> iter = m_list.begin();
+                typename std::list<TYPE_SAVE>::iterator iter = m_list.begin();
 
                 while(lower((*iter->pointer),dBorder) && iter!=m_list.end()) {                //search
                         iter++;
@@ -401,7 +401,7 @@ public:
                 type dQ3 = getQuartil3();                                        //calculate the upper quartil
                                                                                                         //TODO for optimization: getWhisker use getIQR and this calculate Q3 so it will be calculate two times!!!
                 type dBorder = add(dQ3,dW);                                        //where is the border for the lowest value
-                std::_List_iterator<TYPE_SAVE> iter = m_list.begin();
+                typename std::list<TYPE_SAVE>::iterator iter = m_list.begin();
 
                 while(lower((*iter->pointer),dBorder) && iter!=m_list.end()) {                //search
                         iter++;
@@ -426,7 +426,7 @@ public:
                 unsigned int result = 0;
                 type dW1 = getWhisker1(factor);                                                                //find W1
                 type dW3 = getWhisker3(factor);                                                                //find W3
-                std::_List_iterator<TYPE_SAVE> iter = m_list.begin();
+                typename std::list<TYPE_SAVE>::iterator iter = m_list.begin();
 
                 while(lower((*iter->pointer),dW1) && iter!=m_list.end()) {        //count all elements which are lower than W1
                         iter++;
@@ -460,7 +460,7 @@ public:
         type getExtrem(double factor, unsigned int i) {
                 type dW1 = getWhisker1(factor);                                                        //find W1
                 type dW3 = getWhisker3(factor);                                                        //find W3
-                std::_List_iterator<TYPE_SAVE> iter = m_list.begin();
+                typename std::list<TYPE_SAVE>::iterator iter = m_list.begin();
 
                 while(lower((*iter->pointer),dW1) && iter!=m_list.end()) {                        //search in lower area
                         i--;
@@ -505,7 +505,7 @@ public:
                 if(!m_listCreated)
                         sort();                                                                                                        //sort the list
 
-                std::_List_iterator<TYPE_SAVE> iter = m_list.begin();
+                typename std::list<TYPE_SAVE>::iterator iter = m_list.begin();
 
                 while(lower((*iter->pointer),z) && iter!=m_list.end()) {        //search the element which is as first higher than zero
                         iter++;
@@ -572,7 +572,7 @@ protected:
          * this function create the sorted list
          */
         void sort(void) {
-                __gnu_cxx::__normal_iterator<type*,std::vector<type,std::allocator<type> > > iter;
+                typename std::vector<type>::iterator iter;
 
                 for(iter = m_vector.begin(); iter != m_vector.end(); iter++) {                        //fill the sorted list with elements of the help structur
                         m_list.push_back(TYPE_SAVE((*iter)));

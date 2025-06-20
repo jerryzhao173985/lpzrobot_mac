@@ -78,9 +78,9 @@ use_java_controller::use_java_controller ( const char* port_controller, const ch
 
 
         //Die Sockets an die Socketadress-Strukturen binden
-        if ( bind ( server_controller, ( struct sockaddr* ) &server_controller_addr, sizeof ( server_controller_addr ) ) == -1 )
+        if ( ::bind ( server_controller, ( struct sockaddr* ) &server_controller_addr, sizeof ( server_controller_addr ) ) == -1 )
                 {perror ( "bind() failed" ); exit ( 1 );}
-        if ( bind ( server_internalParams, ( struct sockaddr* ) &server_internalParams_addr, sizeof ( server_internalParams_addr ) ) == -1 )
+        if ( ::bind ( server_internalParams, ( struct sockaddr* ) &server_internalParams_addr, sizeof ( server_internalParams_addr ) ) == -1 )
                 {perror ( "bind() failed" ); exit ( 1 );}
 
         //Sockets dem System übergeben

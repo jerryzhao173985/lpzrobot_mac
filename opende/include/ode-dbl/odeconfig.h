@@ -49,12 +49,22 @@
   typedef unsigned short  uint16;
   typedef char            int8;
   typedef unsigned char   uint8;
+#elif defined(__aarch64__) || defined(__arm64__) || defined(_M_ARM64)
+  #define ARM64_SYSTEM   1
+  typedef int             int32;
+  typedef unsigned int    uint32;
+  typedef short           int16;
+  typedef unsigned short  uint16;
+  typedef char            int8;
+  typedef unsigned char   uint8;
+  typedef unsigned char   uint8;
 #else
   typedef int             int32;
   typedef unsigned int    uint32;
   typedef short           int16;
   typedef unsigned short  uint16;
   typedef char            int8;
+  typedef unsigned char   uint8;
   typedef unsigned char   uint8;
 #endif
 

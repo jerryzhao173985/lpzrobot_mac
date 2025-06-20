@@ -26,22 +26,25 @@
 #include "inifile.h"
 #include <iostream>
 using namespace std;
-#include <qregexp.h>
+#include <QRegExp>
 
 
 IniFile::IniFile(){
-  sections.setAutoDelete(true);
+  // Qt5: No more setAutoDelete, we'll manage memory manually
   bloaded=false;
 }
 
 IniFile::IniFile(QString _filename){
-  sections.setAutoDelete(true);
+  // Qt5: No more setAutoDelete, we'll manage memory manually
   bloaded=false;
   setFilename(_filename);
 }
 
 
 IniFile::~IniFile(){
+  // Qt5: Manually delete all sections
+  qDeleteAll(sections);
+  sections.clear();
 }
 
 void IniFile::setFilename(QString _filename){
@@ -63,10 +66,10 @@ bool IniFile::Load(){
   int LineType;
   QString str1,str2,str3;
 
-  file.setName(filename);
+  file.setFileName(filename);
   if (!file.exists()){
 #ifdef DEBUG
-    cerr << "\nFile doesn't exist: " << filename.latin1();
+    cerr << "\nFile doesn't exist: " << filename.toLatin1().data();
 #else
 
 #endif
@@ -74,13 +77,13 @@ bool IniFile::Load(){
   }
   if (!file.open( QIODevice::ReadOnly)) {
 #ifdef DEBUG
-    cerr << "\nCannot read File: " << filename.latin1();
+    cerr << "\nCannot read File: " << filename.toLatin1().data();
 #else
 
 #endif
     return false;
   }
-  // Zeile für Zeile auslesen und zuordnen
+  // Zeile fï¿½r Zeile auslesen und zuordnen
   while( (file.readLine(buffer,1024))>0 ){
     line=QString(buffer);
     str1="";
@@ -169,7 +172,7 @@ int IniFile::getLineType( QString _line, QString &str1, QString &str2, QString &
 
 bool IniFile::Save(){
   if (filename.isEmpty()) return false;
-  file.setName(filename);
+  file.setFileName(filename);
   if (! file.open(QIODevice::WriteOnly)){
 #ifdef DEBUG
     cerr << "\nCannot write File: " << filename.latin1();
@@ -214,6 +217,8 @@ bool IniFile::Save(){
 }
 
 void IniFile::Clear(){
+  // Qt5: Manually delete all sections before clearing
+  qDeleteAll(sections);
   sections.clear();
   filename="";
   bloaded=false;
@@ -288,15 +293,18 @@ QString IniFile::getComment(){
 //SECTION
 
 IniSection::IniSection(){
-  vars.setAutoDelete(true);
+  // Qt5: No more setAutoDelete, we'll manage memory manually
 }
 
 IniSection::IniSection(QString _name){
-  vars.setAutoDelete(true);
+  // Qt5: No more setAutoDelete, we'll manage memory manually
   setName(_name);
 }
 
 IniSection::~IniSection(){
+  // Qt5: Manually delete all vars
+  qDeleteAll(vars);
+  vars.clear();
 }
 
 void IniSection::setName(QString _name){

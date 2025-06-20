@@ -81,6 +81,7 @@ dnl this may NOT be the machine on which the code is going to run in,
 dnl so allow users to compile programs for their target machine.
 pentium=no
 cpu64=no
+arm64=no
 case "$host_cpu" in
   i586 | i686 | i786 )
         pentium=yes
@@ -91,9 +92,15 @@ case "$host_cpu" in
         cpu64=yes
         AC_DEFINE(X86_64_SYSTEM,1,[compiling for a X86_64 system on a gcc-based platform?])
     ;;
+  arm64* | aarch64* )
+        cpu64=yes
+        arm64=yes
+        AC_DEFINE(ARM64_SYSTEM,1,[compiling for an ARM64 system on a gcc-based platform?])
+    ;;
 esac
 
-AM_CONDITIONAL(X86_64_SYSTEM, test x$cpu64 = xyes)
+AM_CONDITIONAL(X86_64_SYSTEM, test x$cpu64 = xyes -a x$arm64 = xno)
+AM_CONDITIONAL(ARM64_SYSTEM, test x$arm64 = xyes)
 
 
 
@@ -193,7 +200,7 @@ dnl Check for OpenGL
 if test "x$drawstuff" = "xOSX"; then
   AC_DEFINE([HAVE_APPLE_OPENGL_FRAMEWORK], [1],
             [Use the Apple OpenGL framework.])
-  GL_LIBS="-framework OpenGL -framework Carbon -framework AGL"
+  GL_LIBS="-framework OpenGL -framework Cocoa"
 else
   have_gl_headers=yes
   AC_CHECK_HEADERS(GL/gl.h GL/glu.h GL/glext.h, ,

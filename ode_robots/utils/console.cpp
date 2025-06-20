@@ -29,6 +29,11 @@
 #include <readline/readline.h>
 #include <readline/history.h>
 
+// Define whitespace macro if not provided by readline
+#ifndef whitespace
+#define whitespace(c) ((c) == ' ' || (c) == '\t')
+#endif
+
 #include <vector>
 #include <sstream>
 #include <string>

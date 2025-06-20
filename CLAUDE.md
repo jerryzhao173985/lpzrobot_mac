@@ -2,18 +2,56 @@
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
 
-## CRITICAL: macOS ARM64 Migration in Progress
+## CRITICAL: macOS ARM64 Migration Progress Report
+
+### ✅ Completed
+1. **Build System Enhancement (Phase 1)**
+   - Updated m4 configuration files for Homebrew paths
+   - Added ARM64 detection to opende/configure.in
+   - Fixed framework dependencies (Carbon → Cocoa)
+   - Updated include paths for both MacPorts and Homebrew
+
+2. **ODE Configuration (Phase 2)**
+   - Fixed ARM64 system detection in odeconfig.h
+   - Removed deprecated framework dependencies
+   - Configuration script updated for modern macOS
+
+3. **Qt5 Migration (Phase 3 - Partial)**
+   - ✅ guilogger: Migrated from Qt3Support to Qt5
+   - ✅ matrixviz: Updated from QGLWidget to QOpenGLWidget
+   - ✅ configurator: Already uses Qt5
+
+4. **C++ Modernization**
+   - Fixed deprecated unary_function usage
+   - Fixed GNU-specific iterator usage
+   - Fixed namespace conflicts (bind, connect)
+   - Resolved C++17 header conflicts
+
+5. **Library Builds**
+   - ✅ selforg: Successfully built (libselforg.a - 57MB)
+   - ⏳ opende: Configuration in progress
+   - ⏳ ode_robots: Waiting for ODE build
+
+### 🚧 In Progress
+- Building ODE physics engine with double precision
+- Preparing ode_robots build
+
+### 📋 TODO
+- Complete ODE build
+- Build ode_robots with OpenSceneGraph support  
+- Test 3D simulations
+- Verify all components work together
 
 **PROJECT GOAL**: Migrate LPZRobots to compile and run correctly on macOS ARM64 (Apple Silicon M4) with the following requirements:
-- Transition from Qt4/Qt3Support to Qt5
-- Upgrade to CMake build system
-- Adopt C++17 standard
+- Transition from Qt4/Qt3Support to Qt5 ✅ (GUI tools migrated)
+- Maintain original Make/m4 build system (per user request)
+- Adopt C++11/17 standards progressively
 - Ensure compatibility with clang/clang++ on macOS
 - Maintain all existing functionality
 - Follow modern C++ best practices
 
-**Migration Status**: See MIGRATION_PLAN_MACOS_ARM64.md for detailed plan and progress.
-**Implementation Examples**: See migration_examples/ directory for production-ready code samples.
+**Migration Status**: Core library built successfully. Physics and visualization components in progress.
+**IMPORTANT**: Preserve original build system architecture as much as possible.
 
 ## Project Overview
 

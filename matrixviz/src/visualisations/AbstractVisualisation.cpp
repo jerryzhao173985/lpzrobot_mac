@@ -29,7 +29,7 @@
 
 
 AbstractVisualisation::AbstractVisualisation(MatrixPlotChannel *channel, ColorPalette *colorPalette, QWidget *parent )
-: QGLWidget(parent) {
+: QOpenGLWidget(parent) {
 
   this->colorPalette = colorPalette;
   this->channel = channel;

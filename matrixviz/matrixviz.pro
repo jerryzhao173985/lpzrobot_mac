@@ -21,7 +21,7 @@ INCLUDEPATH += . \
                src/InputReader \
                src/tools \
                src/visualisations
-CONFIG += qt
+CONFIG += qt c++11
 # debug
 CONFIG -= app_bundle
 
@@ -93,5 +93,5 @@ SOURCES += src/AbstractRobotGUI.cpp \
            src/visualisations/TextureVisualisation.cpp \
            src/visualisations/VectorPlotVisualisation.cpp \
            src/visualisations/BarVisualisation.cpp
-QT+=opengl xml
+QT += core gui widgets opengl xml
 # debug

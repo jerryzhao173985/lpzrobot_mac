@@ -37,8 +37,9 @@ CONFIG += debug \
 warn_on \
 thread \
 qt \
-console
+console \
+c++11
 TARGET = bin/guilogger
 target.path = /usr/bin
-QT += qt3support
+QT += core gui widgets
 INSTALLS += target

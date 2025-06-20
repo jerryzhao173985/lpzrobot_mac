@@ -47,7 +47,7 @@ else #Todo print error to stderr
 fi
 
 ## use -pg for profiling
-CBASEFLAGS="-pthread -std=c++11 -Wno-write-strings -I/usr/X11R6/include $ODEFLAGS LINUXORMAC( ,-I/opt/local/include)"
+CBASEFLAGS="-pthread -std=c++11 -Wno-write-strings -I/usr/X11R6/include $ODEFLAGS LINUXORMAC( ,-I/opt/local/include -I/opt/homebrew/include)"
 CPPFLAGS="$CBASEFLAGS"
 INTERNFLAGS="-g -O"
 LIBS="-lm -losgShadow -losgText -losgUtil -losgViewer -losgGA -losgDB -lOpenThreads -losg -lGL -lGLU -lglut -lpthread"
@@ -107,7 +107,7 @@ while test $# -gt 0; do
       ;;
     --cflags)
       if [ -z "$intern" ]; then INTERNFLAGS=; fi
-      echo $CPPFLAGS DEVORUSER(-I"$srcprefix/include",-I"$prefix/include") LINUXORMAC( ,-I/opt/local/include) $INTERNFLAGS
+      echo $CPPFLAGS DEVORUSER(-I"$srcprefix/include",-I"$prefix/include") LINUXORMAC( ,-I/opt/local/include -I/opt/homebrew/include) $INTERNFLAGS
       ;;
     --libs)
       echo DEVORUSER(-L"$srcprefix/",-L"$prefix/lib") $rpath $STATICSTART -l$LIBBASE $STATICEND $LIBS `ode-dbl-config --libs`

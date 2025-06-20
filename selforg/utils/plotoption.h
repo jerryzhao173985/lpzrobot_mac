@@ -105,7 +105,10 @@ public:
   virtual void flush(long step);
 
   /// nice predicate function for finding by mode
-  struct matchMode : public std::unary_function<const PlotOption&, bool> {
+  struct matchMode {
+    typedef const PlotOption& argument_type;
+    typedef bool result_type;
+    
     matchMode(PlotMode mode) : mode(mode) {}
     int mode;
     bool operator()(const PlotOption& m) { return (m.mode == mode); }

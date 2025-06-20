@@ -13,7 +13,7 @@ OBJECTS_DIR = obj
 MOC_DIR = moc
 
 #Qt used libraries/functionalities
-QT = core gui xml
+QT = core gui widgets xml
 
 #ecbrobots
 # Input - Header

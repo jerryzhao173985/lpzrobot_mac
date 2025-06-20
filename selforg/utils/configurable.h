@@ -119,8 +119,11 @@ class Configurable : public BackCaller
     typedef std::vector<Configurable*> configurableList;
 
     /// nice predicate function for finding by ID
-    struct matchId : public std::unary_function<Configurable*, bool>
+    struct matchId
     {
+        typedef Configurable* argument_type;
+        typedef bool result_type;
+        
         matchId(int id) :
           id(id)
         {

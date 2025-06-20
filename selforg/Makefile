@@ -38,7 +38,7 @@ OFILES     := $(patsubst %.cpp,${BUILD_DIR}/%.o, $(CPPFILES))
 UTILS = selforg-config
 
 # additional inc paths
-INC +=  -I. -Iinclude -Iinclude/selforg
+INC +=  -Iinclude -Iinclude/selforg
 
 # use -pg for profiling
 CPPFLAGS = -Wall -pipe -fpic $(INC) $(shell ./selforg-config --srcprefix="." $(CFGOPTS) --intern --cflags)

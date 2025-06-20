@@ -40,7 +40,7 @@ rpath=DEVORUSER([[-Wl,-rpath,$srcprefix]],[[-Wl,-rpath,$prefix/lib]])
 LIBBASE=selforg
 
 ## use -pg for profiling
-CBASEFLAGS="-std=c++11 -pthread LINUXORMAC( ,-I/opt/local/include)"
+CBASEFLAGS="-std=c++11 -pthread LINUXORMAC( ,-I/opt/local/include -I/opt/homebrew/include)"
 CPPFLAGS="$CBASEFLAGS"
 INTERNFLAGS="-g -O"
 LIBS="-lm -lreadline -lncurses -lpthread"
@@ -106,7 +106,7 @@ while test $# -gt 0; do
       else
         CONFIGURATORCLAGS=-DNOCONFIGURATOR
       fi
-      echo $CPPFLAGS DEVORUSER(-I"$srcprefix/include",-I"$prefix/include") LINUXORMAC( ,-I/opt/local/include) GSL(`gsl-config --cflags`, -DNO_GSL) $CONFIGURATORCLAGS $INTERNFLAGS
+      echo $CPPFLAGS DEVORUSER(-I"$srcprefix/include",-I"$prefix/include") LINUXORMAC( ,-I/opt/local/include -I/opt/homebrew/include) GSL(`gsl-config --cflags`, -DNO_GSL) $CONFIGURATORCLAGS $INTERNFLAGS
       ;;
     --libs)
       if type configurator-config >/dev/null 2>&1; then

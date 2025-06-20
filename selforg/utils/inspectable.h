@@ -88,7 +88,10 @@ public:
   typedef std::list<IConnection> iconnectionlist;
 
   /// nice predicate function for finding a Layer with its vectorname
-  struct matchName : public std::unary_function<ILayer, bool> {
+  struct matchName {
+    typedef ILayer argument_type;
+    typedef bool result_type;
+    
     matchName(std::string name) : name(name) {}
     std::string name;
     bool operator()(ILayer l) { return l.vectorname == name; }

@@ -26,9 +26,9 @@
 #ifndef INIFILE_H
 #define INIFILE_H
 
-#include<qstring.h>
-#include<qfile.h>
-#include<q3ptrlist.h>
+#include <QString>
+#include <QFile>
+#include <QList>
 
 #define EMPTY 0
 #define COMMENT 1
@@ -47,7 +47,7 @@ public:
 
   bool Load();  //liest Datei ein und speichert alle Infos in den Variablen
   bool Save();  // Speichert alle Infos wieder ab. ACHTUNG eine vorhandene Datei wird ueberschrieben.
-  void Clear(); // Loescht alle Infos aus den Vars. Aus Sicherheitsgründen wird der Dateiname intern auf "" gesetzt
+  void Clear(); // Loescht alle Infos aus den Vars. Aus Sicherheitsgrï¿½nden wird der Dateiname intern auf "" gesetzt
 
   void setFilename(QString _filename);
   QString getFilename();
@@ -57,7 +57,7 @@ public:
   void addComment(QString _comment);
   QString getComment();
 
-  // liefert eine Section mit dem Namen zurueck, beim direkt folgenden Aufruf gibt sie die nächste
+  // liefert eine Section mit dem Namen zurueck, beim direkt folgenden Aufruf gibt sie die nï¿½chste
   // Section mit den Eigenschaften.(bei _next)
   // return: false wenn keine Section mit dem Namen (mehr bei _next)
   bool getSection(IniSection& _section,QString _name,bool _next);
@@ -67,7 +67,7 @@ public:
   // returns the value of the variable in the given section and default if it does not exist
   QString getValueDef(QString _section, QString _var, QString _default);
 
-  Q3PtrList <IniSection> sections;
+  QList<IniSection*> sections;
 
 private:
   // ermittelt Zeilentyp: siehe defines (COMMENT;SECTION;VAR)
@@ -102,7 +102,7 @@ public:
   void addValue(QString name, QString value, QString comment = QString());
   void delVar(IniVar* _var);
 
-  Q3PtrList <IniVar> vars;
+  QList<IniVar*> vars;
 
   bool operator== (IniSection& _section); // Vergleicht nur Namen!
   void copy (IniSection& _section); // kopiert eigenen Inhalt in _section)

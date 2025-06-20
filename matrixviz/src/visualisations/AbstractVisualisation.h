@@ -31,12 +31,13 @@ class AbstractPlotChannel;
 #include "MatrixPlotChannel.h"
 #include "VectorPlotChannel.h"
 #include "ColorPalette.h"
-#include <qgl.h>
+#include <QOpenGLWidget>
+#include <QOpenGLFunctions>
 
 #include <iostream>
 
 
-class AbstractVisualisation: public QGLWidget {
+class AbstractVisualisation: public QOpenGLWidget, protected QOpenGLFunctions {
 
   Q_OBJECT
 
