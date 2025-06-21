@@ -5,8 +5,8 @@
 #include <locale.h> // need to set LC_NUMERIC to have a '.' in the numbers piped to gnuplot
 #include <list>
 
-Gnuplot::Gnuplot(const PlotInfo* plotInfo)
-  : plotInfo(plotInfo), pipe(0) {
+Gnuplot::Gnuplot(const PlotInfo* plotInfo, int windowNumber)
+  : plotInfo(plotInfo), pipe(0), windowNumber(windowNumber) {
 };
 
 Gnuplot::~Gnuplot(){
@@ -32,7 +32,7 @@ bool Gnuplot::open(const QString& gnuplotcmd, int w,int h, int x, int y){
   else
     sprintf(cmd, "%s -geometry %ix%i+%i+%i -noraise", gnuplotcmd.toLatin1().constData(), w, h, x, y);
 #endif
-  fprintf(stderr, "Guilogger: Opening gnuplot with command: %s\n", cmd);
+  // fprintf(stderr, "Guilogger: Opening gnuplot with command: %s\n", cmd);
   pipe=popen(cmd,"w");
   
   if(pipe == NULL) {
@@ -41,7 +41,12 @@ bool Gnuplot::open(const QString& gnuplotcmd, int w,int h, int x, int y){
     return false;
   }
 
-  fprintf(stderr, "Guilogger: Gnuplot pipe opened successfully\n");
+  // fprintf(stderr, "Guilogger: Gnuplot pipe opened successfully\n");
+  
+  // Set window title with the window number
+  fprintf(pipe, "set terminal qt title 'window %d'\n", windowNumber);
+  fflush(pipe);
+  
   return true;
   //return popen("gnuplot -geometry 400x300","w");
   /*char b[100];
@@ -117,7 +122,7 @@ void Gnuplot::plot(){
   // calculate real values for start and end
   if(!plotInfo || !plotInfo->getIsVisible()) return;
   if(!pipe) {
-    fprintf(stderr, "Guilogger: WARNING: plot() called but pipe is NULL\n");
+    // fprintf(stderr, "Guilogger: WARNING: plot() called but pipe is NULL\n");
     return; // Don't try to plot if pipe is NULL
   }
 
@@ -129,7 +134,7 @@ void Gnuplot::plot(){
   if(vc.size()==0) return;
   
   QString cmd = plotCmd();
-  fprintf(stderr, "Guilogger: Sending plot command: %s\n", cmd.toLatin1().constData());
+  // fprintf(stderr, "Guilogger: Sending plot command: %s\n", cmd.toLatin1().constData());
   fprintf(pipe, "%s\n", cmd.toLatin1().constData());    
   
   if(plotInfo->getUseReference1()){    

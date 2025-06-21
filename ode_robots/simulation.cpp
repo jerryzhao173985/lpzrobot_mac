@@ -53,7 +53,9 @@
 #include <osgShadow/ShadowedScene>
 
 #include "lpzviewer.h"
+#include "osg/retinalviewer.h"
 #include "lpzhelphandler.h"
+#include "osg/retinawindowsizehandler.h"
 
 #include "primitive.h"
 #include "abstractobstacle.h"
@@ -108,8 +110,8 @@ namespace lpzrobots {
     // default values are set in Base::Base()
     addParameter("ShadowTextureSize",&shadowTexSize);
     addParameter("UseNVidia",&useNVidia);
-    addParameterDef("WindowWidth",&windowWidth,800);
-    addParameterDef("WindowHeight",&windowHeight,600);
+    addParameterDef("WindowWidth",&windowWidth,400);
+    addParameterDef("WindowHeight",&windowHeight,300);
     addParameterDef("UseOdeThread",&useOdeThread,false);
     addParameterDef("UseOsgThread",&useOsgThread,false);
     addParameterDef("UseQMPThread",&useQMPThreads,true);
@@ -168,8 +170,9 @@ namespace lpzrobots {
     if(state!=running)
       return;
 
-    if (!inTaskedMode)
-      dCloseODE ();
+    // dCloseODE is already called in odeHandle.close() in the end() method
+    // if (!inTaskedMode)
+    //   dCloseODE ();
 
     state=closed;
     if(arguments)
@@ -321,8 +324,8 @@ namespace lpzrobots {
         return false;
       }
 
-      // construct the viewer.
-      viewer = new LPZViewer(*arguments);
+      // construct the viewer - use RetinaLPZViewer for proper high-DPI support
+      viewer = new RetinaLPZViewer(*arguments);
       if(useOsgThread && !(osgHandle.cfg->shadowType==3)){ // ParallelSplitShadowMap does not support threads
         viewer->setThreadingModel(Viewer::CullDrawThreadPerContext);
       }else{
@@ -333,7 +336,8 @@ namespace lpzrobots {
       viewer->addEventHandler(this);
       //     viewer->addEventHandler(new osgViewer::HelpHandler(arguments->getApplicationUsage()));
       viewer->addEventHandler(new LpzHelpHandler(arguments->getApplicationUsage()));
-      viewer->addEventHandler(new osgViewer::WindowSizeHandler);
+      // Use custom RetinaWindowSizeHandler instead of the default one for proper high-DPI support
+      viewer->addEventHandler(new RetinaWindowSizeHandler);
       viewer->addEventHandler(osgHandle.scene->robotCamManager); // resizing of video inlets
 
       if(useKeyHandler){
@@ -491,6 +495,47 @@ namespace lpzrobots {
       osgViewer::Viewer::Windows windows;
       viewer->getWindows(windows);
       assert(windows.size()>0);
+
+      // Initial viewport setup for high-DPI displays (e.g., macOS Retina)
+      FOREACH(osgViewer::Viewer::Windows, windows, itr){
+        int x, y, width, height;
+        (*itr)->getWindowRectangle(x, y, width, height);
+        
+        printf("Initial window rectangle: x=%d, y=%d, width=%d, height=%d\n", x, y, width, height);
+        
+        // Get the actual graphics context traits to handle high-DPI displays
+        const osg::GraphicsContext::Traits* traits = (*itr)->getTraits();
+        if (traits) {
+          // Use the traits dimensions which should be the actual framebuffer size
+          printf("Traits dimensions: width=%d, height=%d\n", traits->width, traits->height);
+          width = traits->width;
+          height = traits->height;
+        }
+        
+        // On macOS with Retina displays, manually apply 2x scaling if needed
+        #ifdef __APPLE__
+        // Check if we need to apply manual scaling (traits don't show high-DPI)
+        if (traits && traits->width == width && traits->height == height && width > 0) {
+          // Traits dimensions match window dimensions, likely need manual scaling
+          // Get the actual framebuffer scale
+          float scale = 2.0; // Default Retina scale
+          width = (int)(width * scale);
+          height = (int)(height * scale);
+          printf("Applying %.1fx scaling for Retina display (viewport: %dx%d)\n", scale, width, height);
+        }
+        #endif
+        
+        // Set the viewport to match the actual framebuffer dimensions
+        viewer->getCamera()->setViewport(0, 0, width, height);
+        (*itr)->resizedImplementation(0, 0, width, height);
+        
+        // Also update the projection matrix aspect ratio
+        double aspectRatio = static_cast<double>(width) / static_cast<double>(height);
+        viewer->getCamera()->setProjectionMatrixAsPerspective(
+          30.0f, aspectRatio, 1.0f, 10000.0f);
+        
+        printf("Viewport set to: 0, 0, %d, %d (aspect ratio: %.2f)\n", width, height, aspectRatio);
+      }
 
       FOREACH(osgViewer::Viewer::Windows, windows, itr){
         // if(globalData.odeConfig.motionPersistence > 0)
@@ -795,6 +840,10 @@ namespace lpzrobots {
         break;
       }
       //printf("Key: %i\n", ea.getKey());
+      // Debug: show key codes for Ctrl combinations
+      if(ea.getKey() < 32) {
+        printf("Debug: Ctrl key detected, code: %i\n", ea.getKey());
+      }
       switch(ea.getKey()) {
       case 3 : // Ctrl - c
         if (globalData.isConfiguratorOpen()){
@@ -826,11 +875,17 @@ namespace lpzrobots {
         }
         handled=true;
         break;
-      case 13 : // Ctrl - m
+      case 22 : // Ctrl - v (for "visualize")
+        std::cout << "Ctrl+V detected - attempting to launch MatrixViz" << std::endl;
         for(OdeAgentList::iterator i=globalData.agents.begin(); i != globalData.agents.end(); ++i) {
           if(!(*i)->removePlotOption(MatrixViz)) {
-            PlotOption po(MatrixViz, matrixvizinterval);
+            std::cout << "Creating MatrixViz PlotOption with interval=" << matrixvizinterval << std::endl;
+            PlotOption po(MatrixViz, matrixvizinterval,
+                          "-geometry +" + std::itos(windowWidth+12) + "+300");
+            std::cout << "Adding and initializing PlotOption for agent" << std::endl;
             (*i)->addAndInitPlotOption(po);
+          } else {
+            std::cout << "MatrixViz already active, removing it" << std::endl;
           }
         }
         handled=true;
@@ -971,7 +1026,7 @@ namespace lpzrobots {
   void Simulation::getUsage (osg::ApplicationUsage& au) const {
     au.addKeyboardMouseBinding("Sim: Ctrl-f","File-Logging on/off");
     au.addKeyboardMouseBinding("Sim: Ctrl-g","Restart the Gui-Logger");
-    au.addKeyboardMouseBinding("Sim: Ctrl-m","Restart the MatrixViz");
+    au.addKeyboardMouseBinding("Sim: Ctrl-v","Restart the MatrixViz (visualizer)");
     au.addKeyboardMouseBinding("Sim: Ctrl-c","Restart the Configurator");
     au.addKeyboardMouseBinding("Sim: Ctrl-h","Move watched agent to (0,0,0) position");
     au.addKeyboardMouseBinding("Sim: Ctrl-x","Fixate/release watched agent at pos (0,0,2)");
@@ -1200,7 +1255,8 @@ namespace lpzrobots {
         matrixvizinterval=10; // default value
       index++;
       std::string filter=getListOption(argc,argv,index);
-      plotoptions.push_back(PlotOption(MatrixViz, matrixvizinterval, "", filter));
+      plotoptions.push_back(PlotOption(MatrixViz, matrixvizinterval, 
+                                       "-geometry +" + std::itos(windowWidth+12) + "+300", filter));
     }
 
     // using SoundMan for acustic output

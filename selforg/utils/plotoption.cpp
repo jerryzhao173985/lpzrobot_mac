@@ -65,11 +65,74 @@ bool PlotOption::open(){
     sprintf(cmd, "guilogger -m pipe %s", parameter.c_str());
     pipe=popen(cmd,"w");
     break;
-  case MatrixViz:
-    pipe=popen("matrixviz -noCtrlC -novideo","w");
-    if (pipe) std::cout << "MatrixViz-Sream opened" << std::endl;
-    else std::cout << "MatrixViz-Sream open failed" << std::endl;
+  case MatrixViz: {
+    // Build command with parameters if provided
+    if (!parameter.empty()) {
+      sprintf(cmd, "matrixviz -noCtrlC -novideo %s", parameter.c_str());
+    } else {
+      sprintf(cmd, "matrixviz -noCtrlC -novideo");
+    }
+    std::cout << "PlotOption: Attempting to launch MatrixViz with command: " << cmd << std::endl;
+    std::cout << "PlotOption: Parameter passed: '" << parameter << "'" << std::endl;
+    
+    pipe = popen(cmd, "w");
+    
+    if (!pipe) {
+      std::cerr << "PlotOption: Initial MatrixViz launch failed, trying alternatives..." << std::endl;
+      
+      // Try with LPZROBOTS_HOME environment variable
+      const char* lpzrobots_home = getenv("LPZROBOTS_HOME");
+      if (lpzrobots_home) {
+        std::cerr << "PlotOption: Using LPZROBOTS_HOME=" << lpzrobots_home << std::endl;
+      }
+      
+      if (lpzrobots_home) {
+        // Try pipe-friendly wrapper first
+        if (!parameter.empty()) {
+          sprintf(cmd, "%s/matrixviz/matrixviz-pipe -noCtrlC -novideo %s", 
+                  lpzrobots_home, parameter.c_str());
+        } else {
+          sprintf(cmd, "%s/matrixviz/matrixviz-pipe -noCtrlC -novideo", 
+                  lpzrobots_home);
+        }
+        std::cerr << "PlotOption: Trying pipe-friendly wrapper: " << cmd << std::endl;
+        pipe = popen(cmd, "w");
+        
+        if (!pipe) {
+          // Try regular wrapper with full path
+          if (!parameter.empty()) {
+            sprintf(cmd, "%s/matrixviz/matrixviz -noCtrlC -novideo %s", 
+                    lpzrobots_home, parameter.c_str());
+          } else {
+            sprintf(cmd, "%s/matrixviz/matrixviz -noCtrlC -novideo", 
+                    lpzrobots_home);
+          }
+          std::cerr << "PlotOption: Trying regular wrapper: " << cmd << std::endl;
+          pipe = popen(cmd, "w");
+          
+          if (!pipe) {
+            // Also try guilogger directory
+            if (!parameter.empty()) {
+              sprintf(cmd, "%s/guilogger/matrixviz -noCtrlC -novideo %s", 
+                      lpzrobots_home, parameter.c_str());
+            } else {
+              sprintf(cmd, "%s/guilogger/matrixviz -noCtrlC -novideo", 
+                      lpzrobots_home);
+            }
+            std::cerr << "PlotOption: Trying guilogger directory: " << cmd << std::endl;
+            pipe = popen(cmd, "w");
+          }
+        }
+      }
+    }
+    
+    if (pipe) {
+      std::cout << "PlotOption: MatrixViz stream opened successfully" << std::endl;
+    } else {
+      std::cerr << "PlotOption: MatrixViz stream open failed" << std::endl;
+    }
     break;
+  }
   case ECBRobotGUI:
     pipe=popen("SphericalRobotGUI","w");
     if (pipe)   std::cout << "open a SphericalRobotGUI-Stream " << std::endl;

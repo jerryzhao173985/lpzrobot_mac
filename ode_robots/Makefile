@@ -95,7 +95,15 @@ $(LIB): $(UTILS) Makefile.depend $(OFILES)
 	@if [ "$(STRIP)" = "yes" ]; then strip --strip-debug $(LIB); fi
 
 $(SHAREDLIB): Makefile.depend $(OFILES)
-	$(CXX) -shared -Wl,-soname,`basename $(SHAREDLIB)` -o $(SHAREDLIB) $(OFILES)
+	@if [ `uname` = "Darwin" ]; then \
+		$(CXX) -dynamiclib -install_name `basename $(SHAREDLIB)` -o $(SHAREDLIB) $(OFILES) \
+		$(shell $(SELFORGCFG) $(CFGOPTS) --libs) \
+		$(shell ./ode_robots-config --srcprefix="." $(CFGOPTS) --intern --libs | sed 's/-lode_robots//'); \
+	else \
+		$(CXX) -shared -Wl,-soname,`basename $(SHAREDLIB)` -o $(SHAREDLIB) $(OFILES) \
+		$(shell $(SELFORGCFG) $(CFGOPTS) --libs) \
+		$(shell ./ode_robots-config --srcprefix="." $(CFGOPTS) --intern --libs | sed 's/-lode_robots//'); \
+	fi
 
 ${BUILD_DIR}/%.o: %.cpp
 	@mkdir -p $(dir $@)

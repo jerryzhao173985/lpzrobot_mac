@@ -85,8 +85,8 @@ while test $# -gt 0; do
       ;;
     --static) ##force use static linking of lib
       STATIC=--static
-      STATICSTART=-Wl,-Bstatic
-      STATICEND=-Wl,-Bdynamic
+      LINUXORMAC([[STATICSTART=-Wl,-Bstatic]],[[STATICSTART=]])
+      LINUXORMAC([[STATICEND=-Wl,-Bdynamic]],[[STATICEND=]])
       rpath=""
     ;;
     --opt) ##Optimisation

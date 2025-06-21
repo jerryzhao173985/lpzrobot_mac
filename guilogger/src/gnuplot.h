@@ -22,8 +22,8 @@
 
 class Gnuplot {
 public: 
-  Gnuplot() : plotInfo(0) {} 
-  Gnuplot(const PlotInfo* plotinfo);
+  Gnuplot() : plotInfo(0), windowNumber(0) {} 
+  Gnuplot(const PlotInfo* plotinfo, int windowNumber = 0);
   
   ~Gnuplot();
 
@@ -63,6 +63,7 @@ public:
 private:
   const PlotInfo* plotInfo;
   FILE* pipe;
+  int windowNumber;
 };
 
 #endif

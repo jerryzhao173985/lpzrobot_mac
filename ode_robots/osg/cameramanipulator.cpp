@@ -283,7 +283,7 @@ namespace lpzrobots {
     Pos tilt = Matrix::transform3x3(Vec3(0,0,1), matrix);
     //    head.print();
     //    tilt.print();
-    std::cout <<  className() << " selected" << std::endl;
+    // std::cout <<  className() << " selected" << std::endl;
     camHandle.view.y() = RadiansToDegrees(getAngle(Vec3(0,0,1), tilt)-M_PI/2);
     camHandle.desiredEye=camHandle.eye;
     camHandle.desiredView=camHandle.view;
@@ -661,7 +661,7 @@ namespace lpzrobots {
     if (agent) {
       camHandle.watchingAgent = agent;
       camHandle.watchingAgentDefined = true;
-      cout << "Agent " << camHandle.watchingAgent->getRobot()->getName() << " selected" << endl;
+      // cout << "Agent " << camHandle.watchingAgent->getRobot()->getName() << " selected" << endl;
       setHomeViewByAgent();
       setHomeEyeByAgent();
       // maybe highlight agent here

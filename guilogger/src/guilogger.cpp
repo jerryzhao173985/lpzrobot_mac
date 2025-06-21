@@ -537,7 +537,7 @@ void GuiLogger::load() {
 
   // create plotting windows
   for(int i=0; i<plotwindows; i++){
-    plotWindows.push_back(Gnuplot(plotInfos[i])); // TODO load visiblity from cfgfile
+    plotWindows.push_back(Gnuplot(plotInfos[i], i)); // Pass window number for unique titles
   }
 
   //open and position plotwindows

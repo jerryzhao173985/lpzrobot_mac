@@ -33,4 +33,5 @@ if [ ! -d "$CONFIG_DIR" ]; then
 fi
 
 # Run matrixviz with all arguments passed through
-exec "$MATRIXVIZ_BIN" "$@"
+# Don't use exec to maintain shell process for popen compatibility
+"$MATRIXVIZ_BIN" "$@"
