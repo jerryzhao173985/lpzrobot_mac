@@ -222,6 +222,8 @@ On some machines the program might crash right away because of graphic card inco
 
 Have a look at the console after starting the program, there you will find some further information for the usage of the program. E.g. with `Ctrl+C` (on the terminal) you get an interactive console interface which can be used to modify parameters on the fly.
 
+**Note on MatrixViz keyboard shortcut:** The MatrixViz visualization tool is launched with `Ctrl+V` (not Ctrl+M) when the simulation window is focused. This is because Ctrl+M is intercepted by the terminal as a carriage return. You can also start MatrixViz directly using the `-m` command line option.
+
 For starting your own simulation see paragraph "How to Start Your Own Simulation" in `ode_robots`. For well-documented examples of a `main.cpp` of a simulation and a robot `.cpp` file click the tab "Examples" at the top of this page.
 
 -----

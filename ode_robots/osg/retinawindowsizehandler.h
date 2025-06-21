@@ -63,14 +63,15 @@ public:
                     
                     // Get current viewport for comparison
                     const osg::Viewport* vp = camera->getViewport();
-                    if (vp) {
-                        std::cout << "RetinaWindowSizeHandler: Current viewport: " 
-                                  << vp->x() << ", " << vp->y() << ", " 
-                                  << vp->width() << "x" << vp->height() << std::endl;
-                    }
+                    // Debug output - commented out to reduce console spam during resizing
+                    // if (vp) {
+                    //     std::cout << "RetinaWindowSizeHandler: Current viewport: " 
+                    //               << vp->x() << ", " << vp->y() << ", " 
+                    //               << vp->width() << "x" << vp->height() << std::endl;
+                    // }
                     
-                    std::cout << "RetinaWindowSizeHandler: Event size: " << eventWidth << "x" << eventHeight
-                              << ", Framebuffer size: " << fbWidth << "x" << fbHeight << std::endl;
+                    // std::cout << "RetinaWindowSizeHandler: Event size: " << eventWidth << "x" << eventHeight
+                    //           << ", Framebuffer size: " << fbWidth << "x" << fbHeight << std::endl;
                     
                     // On Retina displays, we need to use the framebuffer size, not the event size
                     // The framebuffer size should be larger on high-DPI displays
